@@ -1,3 +1,8 @@
 span {
   font-weight: bold;
 }
+
+.swal2-confirm,
+.swal2-styled {
+  background-color: #255E9C !important;
+}

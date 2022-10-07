@@ -1,12 +1,19 @@
 import { Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 
 export const Time = () => {
 
   const [time, setTime] = useState()
+
   setInterval(() => {
-    let time = new Date().toLocaleTimeString();
+    let date, time;
+
+    date = new Date();
+
+    time = date.toLocaleTimeString();
+
+    time = `${time}`
     setTime(time)
   }, 1000);
 

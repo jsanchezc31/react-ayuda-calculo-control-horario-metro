@@ -1,6 +1,8 @@
 import { useContext, useEffect } from 'react'
 import { Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material'
 import { TimelapseOutlined } from '@mui/icons-material'
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.css';
 
 import useForm from '../../hooks/useForm';
 import { Time } from '../components/Time';
@@ -22,11 +24,17 @@ const formValidations = {
 
 export const DayFormView = () => {
 
-  // Utilizamos el contexto
+  // Contexto
   const { daysState: daysInfo, addDay, activeDayState, cleanActiveDay } = useContext(DaysContext);
 
   console.log(activeDayState)
+  // Formulario
   const { dia, horaInicio, horaFin, formState, onInputChange } = useForm(formData, formValidations);
+
+  // Cuando el select del día cambia limpiamos el día
+  useEffect(() => {
+    cleanActiveDay();
+  }, [dia])
 
 
   const onFormSubmit = (event) => {
@@ -35,28 +43,47 @@ export const DayFormView = () => {
     // console.log("state", daysInfo);
 
     // En el formstate ya viene el formulario con los cambios
-    // Todo: validaciones
     // validamos que no vengan vacias las horas de inicio y fin
-    if (horaInicio.length <= 0) return;
-    if (horaFin.length <= 0) return;
+    if (dia.length === 0) {
+      Swal.fire('ERROR', 'Selecciona el día de la semana', 'error');
+      return;
+    };
 
+    // Validamos que no se repita la key
+    let keyRepetida = false
     // Añadimos key
-    let key; //variable usada para ordenar
+    let key; //variable usada para ordenar y validaciones
 
-    if (dia.length === 0) return;
     if (dia === 'Lunes') key = 0;
     if (dia === 'Martes') key = 1;
     if (dia === 'Miercoles') key = 2;
     if (dia === 'Jueves') key = 3;
     if (dia === 'Viernes') key = 4;
 
-    // Validamos que no se repita la key
-    let keyRepetida = false
     daysInfo.map(day => {
       if (day.key === key) keyRepetida = true;
     });
 
-    if (keyRepetida) return;
+    if (keyRepetida) {
+      Swal.fire('ERROR', 'Día introducido previamente, selecciona otro día', 'error');
+      return;
+    };
+
+    // Validamos las horas de inicio y fin
+    if (horaInicio.length <= 0) {
+      Swal.fire('ERROR', 'Introduce hora inicio de jornada', 'error');
+      return;
+    };
+    if (horaFin.length <= 0) {
+      Swal.fire('ERROR', 'Introduce hora fin de jornada', 'error');
+      return;
+    };
+
+    if (horaInicio >= horaFin) {
+      Swal.fire('ERROR', 'La hora de inicio no puede se mayor o igual a la hora de fin de jornada', 'error');
+      return;
+    }
+
 
     let newDay = {
       key,
@@ -69,11 +96,7 @@ export const DayFormView = () => {
   }
 
 
-  console.log("Día activo", activeDayState);
-  useEffect(() => {
-    console.log("limpiando horas totales");
-    cleanActiveDay();
-  }, [dia])
+
 
 
 
