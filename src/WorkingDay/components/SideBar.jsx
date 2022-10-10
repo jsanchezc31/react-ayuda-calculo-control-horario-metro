@@ -29,25 +29,30 @@ export const SideBar = ({ width }) => {
         <Toolbar />
         <Toolbar sx={{ mb: 4 }}>
           <Typography variant="h4" component='div' align='center' color='#255E9C'>
-            Horas a cumplir {totalTimeState.timeToDo}
+            Horas a cumplir <span>{totalTimeState.timeToDo}</span>
           </Typography>
         </Toolbar>
         <Divider sx={{ mb: 2 }} />
 
         <Toolbar sx={{ mb: 2 }}>
-          <Typography variant="h5" component='div' color='#255E9C'>
-            Horas realizadas: <span>{totalTimeState.timeMaked}</span>
+          <Typography variant="h5" component='div' align='center' color='#255E9C'>
+            Horas realizadas: <br></br><span>{totalTimeState.timeMaked}</span>
           </Typography>
-        </Toolbar>
-
-        <Toolbar sx={{ mb: 2 }}>
-          <Typography variant="h5" component='div' color='#255E9C'>
+          <Typography variant="h5" component='div' align='center' color='#255E9C'>
             Horas restantes: <br></br><span>{totalTimeState.timeLeft}</span>
           </Typography>
         </Toolbar>
+        {/* TODO */}
+        {/* <Toolbar sx={{ mb: 2, justifyContent: 'center' }}>
+          <Typography variant="h5" component='div' align='center' color='#255E9C'>
+            Saldo: <span>{totalTimeState.balance}</span>
+          </Typography>
+        </Toolbar> */}
 
         <Divider />
-
+        <Typography variant="h5" component='div' color='#255E9C' sx={{ mt: 3, ml: 4 }}>
+          Días de la semana:
+        </Typography>
         <List>
           {
             daysInfo.map(day => (

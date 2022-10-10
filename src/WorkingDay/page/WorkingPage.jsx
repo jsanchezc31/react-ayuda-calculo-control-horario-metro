@@ -9,9 +9,7 @@ const widthPage = 300
 export const WorkingPage = () => {
 
 
-  // useEffect(() => {
 
-  // }, [])
 
   return (
     <Box sx={{ display: 'flex' }}

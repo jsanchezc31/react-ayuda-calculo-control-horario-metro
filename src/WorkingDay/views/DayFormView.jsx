@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material'
 import { TimelapseOutlined } from '@mui/icons-material'
 import Swal from 'sweetalert2';
@@ -7,6 +7,7 @@ import 'sweetalert2/dist/sweetalert2.css';
 import useForm from '../../hooks/useForm';
 import { Time } from '../components/Time';
 import { DaysContext } from '../context/DaysContext';
+import { calculateDiferenceHour } from '../../hooks/calculateTime';
 
 const formData = {
   dia: '',
@@ -27,9 +28,14 @@ export const DayFormView = () => {
   // Contexto
   const { daysState: daysInfo, addDay, activeDayState, cleanActiveDay } = useContext(DaysContext);
 
-  console.log(activeDayState)
+  // console.log(activeDayState)
   // Formulario
-  const { dia, horaInicio, horaFin, formState, onInputChange } = useForm(formData, formValidations);
+  const { dia, horaInicio, horaFin, formState, onInputChange, onResetForm } = useForm(formData, formValidations);
+
+  // Stado de las horas calculadas
+  let horasDia;
+  const [stateHorasDia, setStateHorasDia] = useState()
+
 
   // Cuando el select del día cambia limpiamos el día
   useEffect(() => {
@@ -89,14 +95,24 @@ export const DayFormView = () => {
       key,
       dia: dia,
       horaInicio: horaInicio,
-      horaFin: horaFin
+      horaFin: horaFin,
+      horasDia: stateHorasDia
     }
 
     addDay(newDay);
+    onResetForm();
+    Swal.fire('Día introducido correctamente', '', 'success');
   }
 
 
 
+  useEffect(() => {
+    setStateHorasDia("")
+    if (horaInicio.length <= 0) return;
+    if (horaFin.length <= 0) return;
+    horasDia = calculateDiferenceHour(horaInicio, horaFin);
+    setStateHorasDia(horasDia);
+  }, [horaInicio, horaFin])
 
 
 
@@ -117,6 +133,8 @@ export const DayFormView = () => {
               name='dia'
               value={dia}
               onChange={onInputChange}
+              variant='filled'
+
             >
               <MenuItem value={'Lunes'}>Lunes</MenuItem>
               <MenuItem value={'Martes'}>Martes</MenuItem>
@@ -131,7 +149,7 @@ export const DayFormView = () => {
       <Grid container justifyContent='center'>
         <Grid container
           display='flex'
-          sx={{ p: 5, border: '1px solid grey', borderRadius: '10px', width: 700, display: 'flex', justifyContent: 'center' }}>
+          sx={{ p: 7, border: '3px solid #255E9C', borderRadius: '10px', width: 700, display: 'flex', justifyContent: 'center' }}>
 
           <Grid container justifyContent='center'>
             <Grid item >
@@ -146,6 +164,7 @@ export const DayFormView = () => {
                 name='horaInicio'
                 value={horaInicio}
                 onChange={onInputChange}
+                inputProps={{ step: 300 }}
               />
 
               <TextField
@@ -170,14 +189,14 @@ export const DayFormView = () => {
 
               >
                 <TimelapseOutlined />
-                &nbsp; &nbsp; Calcular
+                &nbsp; &nbsp; AÑADIR DÍA
               </Button>
             </Grid>
           </Grid>
 
           <Grid container justifyContent='center' sx={{ alignItems: 'center', mt: 4 }}  >
             <Typography fontSize={25} fontWeight='light' color='#255E9C'>
-              Horas realizadas en el día: <span>{activeDayState.horasDia}</span>  *
+              Horas realizadas en el día: <span>{stateHorasDia}</span>  *
             </Typography>
           </Grid>
 
@@ -189,7 +208,7 @@ export const DayFormView = () => {
 
         </Grid>
       </Grid>
-      <Grid container justifyContent='center' mt={10}>
+      <Grid container justifyContent='center' mt={5}>
         {/* */}
         <Time />
       </Grid>

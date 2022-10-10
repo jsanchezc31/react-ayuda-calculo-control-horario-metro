@@ -24,6 +24,7 @@ let tiempoSemana = {
   timeToDo: '35:00',
   timeMaked: '00:00',
   timeLeft: '35:00',
+  balance: '00:00'
 }
 
 let activeDay = {
@@ -47,7 +48,7 @@ export const DaysProvider = ({ children }) => {
     // Llamamos a la función que nos calcula las horas para insertalas
     // newDay = { dia: 'Lunes', horaInicio: '7', horaFin: '12' }
     let horasRealizadasDia = calculateDiferenceHour(newDay.horaInicio, newDay.horaFin);
-    console.log(horasRealizadasDia);
+    // console.log(horasRealizadasDia);
     newDay['horasDia'] = horasRealizadasDia;
 
     // *****************
@@ -60,8 +61,7 @@ export const DaysProvider = ({ children }) => {
     action = { type: '[AddActive]', payload: newDay };
     dispatchActive(action)
 
-
-    // agregamos el tiempo total
+    // agregamos el tiempo total (Restante, realizados, saldo)
     action = { type: '[Calcular]', payload: newDay };
     dispatchTotalTime(action);
   }
@@ -71,6 +71,7 @@ export const DaysProvider = ({ children }) => {
     let action = { type: '[AddActive]', payload: activeDay };
     dispatchActive(action)
   }
+
   return (
     <DaysContext.Provider value={{
       // ...daysState,
